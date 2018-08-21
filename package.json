@@ -1,0 +1,26 @@
+{
+  "name": "authtag",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.16.3",
+    "mongodb": "^3.1.3",
+    "redis": "^2.8.0",
+    "redis-server": "^1.2.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaydenchen12/AuthTag.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jaydenchen12/AuthTag/issues"
+  },
+  "homepage": "https://github.com/jaydenchen12/AuthTag#readme"
+}
