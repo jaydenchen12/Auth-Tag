@@ -25,8 +25,8 @@ app.post('/ownership',function(req,res){
   if (!token) return res.status(401).send({ authorized: false, message: 'No token provided.' });
   jwt.verify(token, config.secret, function(err, decoded) {
     if (err) return res.status(500).send({ authorized: false, message: 'Failed to authenticate token.' });
+    return res.status(200).send("Success")
   });
-  return res.status(200).send("Success")
 });
 
 app.post('/verify',function(req,res){
@@ -36,7 +36,11 @@ app.post('/verify',function(req,res){
     try {
           products.findOne({tagId: req.body.tagId},
             (err, product) => {
-              res.status(200).send(product);
+              if (product){
+                res.status(200).send(product);
+              } else {
+                res.status(201).send("Not Real")
+              }
           });
     } catch (error) {
        console.log(error);
@@ -48,41 +52,31 @@ app.post('/verify',function(req,res){
 app.post('/transferOwner',function(req,res){
   let token = util.getToken(req.headers['authorization']);
   if (!token) return res.status(401).send({ authorized: false, message: 'No token provided.' });
-  try {
-    let decoded = jwt.verify(token, config.secret);
-    console.log(decoded)
-  } catch (error) {
-      return res.status(401).send('unauthorized');
-  }
-  MongoClient.connect(url, function(err, db) {
-    assert.equal(null, err);
-    let products = db.db(dbName).collection('products')
-    let accounts = db.db(dbName).collection('accounts')
-
-    try {
-          accounts.findOne({_id: decoded.id}).then((user) => {
-            let transaction = {
-              tagId: req.body.tagId,
-              sourceOwner: user.userId,
-              receiver: req.body.receiverId
-            }
-            let transaction = {
-              tagId: req.body.tagId,
-              sourceOwner: user.userId,
-              receiver: req.body.receiverId
-            }
-            //push the transaction onto the product history
-            products.update({tagId: req.body.tagId}, {$push: {ownerships: transaction}});
-            //take ownership away from owner
-            accounts.update({userId: req.body.userId}, {$pull: {ownerships: tagId}});
-            //add ownership to receiver
-            accounts.update({userId: req.body.receiverId}, {$push: {ownerships: tagId}});
-          });
-
-    } catch (error) {
-       console.log (error);
-    };
-    db.close();
+  jwt.verify(token, config.secret, function(err, decoded){
+    if (err) return res.status(500).send({ authorized: false, message: 'Failed to authenticate token.' });
+    MongoClient.connect(url, function(err, db) {
+      assert.equal(null, err);
+      let products = db.db(dbName).collection('products')
+      let accounts = db.db(dbName).collection('accounts')
+      try {
+              let transaction = {
+                tagId: req.body.tagId,
+                sourceOwner: req.body.userId,
+                receiver: req.body.receiverId
+              }
+              //push the transaction onto the product history
+              console.log(req.body)
+              products.updateOne({tagId: req.body.tagId}, {$push: {ownerships: transaction}});
+              //take ownership away from owner
+              accounts.updateOne({userId: req.body.userId}, {$pull: {ownerships: req.body.tagId}});
+              //add ownership to receiver
+              accounts.updateOne({userId: req.body.receiverId}, {$push: {ownerships: req.body.tagId}});
+              return res.status(200).send("Success")
+      } catch (error) {
+         console.log (error);
+      };
+      db.close();
+    });
   });
 });
 
