@@ -5,7 +5,6 @@ const express = require('express');
 const router = express.Router();
 const MongoClient = require('mongodb').MongoClient;
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 const config = require('../config');
 const util = require('../util');
 const dbName = 'AuthMongo';
@@ -15,7 +14,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 router.post('/login',function(req,res){
-  let username=req.body.user;
+  let username=req.body.userId;
   let password=req.body.password;
   MongoClient.connect(url, function(err, db) {
     assert.equal(null, err);
@@ -25,7 +24,8 @@ router.post('/login',function(req,res){
         accounts.findOne({ userId: username }, (err, user) => {
           if (err) return res.status(500).send('Error on the server.');
           if (!user) return res.status(404).send('No user found.');
-          var passwordIsValid = bcrypt.compareSync(inputPassword, user.password);
+          console.log(inputPassword, user.password)
+          var passwordIsValid = (inputPassword == user.password);
           if (!passwordIsValid) return res.status(401).send({ authorized: false, token: null });
           var token = jwt.sign({ id: user._id}, config.secret, {
             expiresIn: 86400 // expires in 24 hours
@@ -41,7 +41,7 @@ router.post('/login',function(req,res){
 });
 
 router.post('/signup',function(req,res){
-  let username=req.body.user;
+  let username=req.body.userId;
   let password=req.body.password;
   console.log("User name = "+username+", password is "+password);
   // Use connect method to connect to the server
