@@ -35,7 +35,9 @@ function TagChain() {
     };
 
     this.query = (tagID) => {
-        return (this.chain.find((block) => { return block.tagData.tagID === tagID }) != null);
+        try {
+            return (this.chain.find((block) => { return block.tagData.tagID === tagID }) != null);
+        } catch (e) { return false;}
     }
 }
 
