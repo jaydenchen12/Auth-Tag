@@ -34,7 +34,7 @@ app.post('/transferOwnership',function(req,res){
   if (!req.headers['authorization']) return res.status(401).send({ authorized: false, message: 'No token provided.' });
   let token = util.getToken(req.headers['authorization']);
   jwt.verify(token, config.secret, function(err, decoded){
-    if (err) return res.status(500).send({ authorized: false, message: 'Failed to authenticate token.' });
+    if (err) return res.status(401).send({ authorized: false, message: 'Failed to authenticate token.' });
     MongoClient.connect(url, function(err, db) {
       assert.equal(null, err);
       let products = db.db(dbName).collection('products')
@@ -65,7 +65,7 @@ app.post('/releaseOwnership',function(req,res){
   if (!req.headers['authorization']) return res.status(401).send({ authorized: false, message: 'No token provided.' });
   let token = util.getToken(req.headers['authorization']);
   jwt.verify(token, config.secret, function(err, decoded){
-    if (err) return res.status(500).send({ authorized: false, message: 'Failed to authenticate token.' });
+    if (err) return res.status(401).send({ authorized: false, message: 'Failed to authenticate token.' });
     MongoClient.connect(url, function(err, db) {
       assert.equal(null, err);
       let products = db.db(dbName).collection('products')
@@ -92,7 +92,7 @@ app.post('/claimOwnership',function(req,res){
   if (!req.headers['authorization']) return res.status(401).send({ authorized: false, message: 'No token provided.' });
   let token = util.getToken(req.headers['authorization']);
   jwt.verify(token, config.secret, function(err, decoded){
-    if (err) return res.status(500).send({ authorized: false, message: 'Failed to authenticate token.' });
+    if (err) return res.status(401).send({ authorized: false, message: 'Failed to authenticate token.' });
     MongoClient.connect(url, function(err, db) {
       assert.equal(null, err);
       let products = db.db(dbName).collection('products')
