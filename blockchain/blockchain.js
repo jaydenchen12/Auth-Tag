@@ -1,27 +1,42 @@
 /**
  * Created by Dhruv on 8/21/2018.
  */
+"use strict";
 
+const Block = require('./block');
 function TagChain() {
-    let chain = [];
+     this.chain = [createGenesis()];
 
     this.addBlock = (data) => {
-        let index = chain.length;
+        let index = this.chain.length;
         let prevHash = 0;
         if (index > 0){
-            prevHash = chain[index-1].getHash();
+            prevHash = this.chain[index-1].hash;
         }
         let block = new Block(index, prevHash, data);
-        chain.push(block);
+        this.chain.push(block);
     };
 
+
+
+    function createGenesis()  {
+        let block =  new Block(0,0,{"tagID" : "-999999"});
+        return block;
+    }
+
     this.isValid = () => {
-        for (let i = 0; i < chain.length; i++){
-            if (chain[i].getHash() !== chain[i].calculateHash())
+        for (let i = 0; i < this.chain.length; i++) {
+            if (this.chain[i].hash !== this.chain[i].calculateHash())
                 return false;
-            if (i > 0 && chain[i].getPreviousHash() !== chain[i-1].getHash())
+            if (i > 0 && this.chain[i].previousHash !== this.chain[i - 1].hash)
                 return false;
         }
         return true;
+    };
+
+    this.query = (tagID) => {
+        return (this.chain.find((block) => { return block.tagData.tagID === tagID }) != null);
     }
 }
+
+module.exports = TagChain;
