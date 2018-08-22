@@ -1,2 +1,7 @@
 authtag.pem
 backend/data/*
+.idea/*
+node_modules/*
+noe_modules/**/*
+.DS_Store
+./backend/.DS_Store
