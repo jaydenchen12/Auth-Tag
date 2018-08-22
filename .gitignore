@@ -1,2 +1,6 @@
 authtag.pem
 backend/data/*
+.idea/*
+keys/*
+node_modules/*
+noe_modules/**/*
