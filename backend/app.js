@@ -30,26 +30,6 @@ app.post('/ownership',function(req,res){
   });
 });
 
-app.post('/verify',function(req,res){
-  MongoClient.connect(url, function(err, db) {
-    assert.equal(null, err);
-    let products = db.db(dbName).collection('products')
-    try {
-          products.findOne({tagId: req.body.tagId},
-            (err, product) => {
-              if (product){
-                res.status(200).send(product);
-              } else {
-                res.status(201).send("Not Real")
-              }
-          });
-    } catch (error) {
-       console.log(error);
-    };
-    db.close();
-  });
-});
-
 app.post('/transferOwnership',function(req,res){
   let token = util.getToken(req.headers['authorization']);
   if (!token) return res.status(401).send({ authorized: false, message: 'No token provided.' });

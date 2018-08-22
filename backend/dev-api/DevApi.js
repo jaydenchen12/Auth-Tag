@@ -18,18 +18,13 @@ router.get('/devDbProducts',function(req,res){
     assert.equal(null, err);
     let products = db.db(dbName).collection('products')
     try {
-          products.findMany({},
-            (err, product) => {
-              if (product){
-                res.status(200).send(product);
-              } else {
-                res.status(201).send("Error getting dev products")
-              }
-          });
+      products.find({}).toArray(function(err, result) {
+        res.status(200).send(result);
+        db.close();
+      });
     } catch (error) {
        console.log(error);
     };
-    db.close();
   });
 });
 
@@ -38,18 +33,13 @@ router.get('/devDbAccounts',function(req,res){
     assert.equal(null, err);
     let accounts = db.db(dbName).collection('accounts')
     try {
-          accounts.findMany({},
-            (err, accounts) => {
-              if (accounts){
-                res.status(200).send(accounts);
-              } else {
-                res.status(201).send("Error getting dev products")
-              }
-          });
+      accounts.find({}).toArray(function(err, result) {
+        res.status(200).send(result);
+        db.close();
+      });
     } catch (error) {
        console.log(error);
     };
-    db.close();
   });
 });
 
