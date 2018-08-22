@@ -31,8 +31,8 @@ app.post('/ownership',function(req,res){
 });
 
 app.post('/transferOwnership',function(req,res){
+  if (!req.headers['authorization']) return res.status(401).send({ authorized: false, message: 'No token provided.' });
   let token = util.getToken(req.headers['authorization']);
-  if (!token) return res.status(401).send({ authorized: false, message: 'No token provided.' });
   jwt.verify(token, config.secret, function(err, decoded){
     if (err) return res.status(500).send({ authorized: false, message: 'Failed to authenticate token.' });
     MongoClient.connect(url, function(err, db) {
@@ -62,8 +62,8 @@ app.post('/transferOwnership',function(req,res){
   });
 });
 app.post('/releaseOwnership',function(req,res){
+  if (!req.headers['authorization']) return res.status(401).send({ authorized: false, message: 'No token provided.' });
   let token = util.getToken(req.headers['authorization']);
-  if (!token) return res.status(401).send({ authorized: false, message: 'No token provided.' });
   jwt.verify(token, config.secret, function(err, decoded){
     if (err) return res.status(500).send({ authorized: false, message: 'Failed to authenticate token.' });
     MongoClient.connect(url, function(err, db) {
@@ -89,8 +89,8 @@ app.post('/releaseOwnership',function(req,res){
   });
 });
 app.post('/claimOwnership',function(req,res){
+  if (!req.headers['authorization']) return res.status(401).send({ authorized: false, message: 'No token provided.' });
   let token = util.getToken(req.headers['authorization']);
-  if (!token) return res.status(401).send({ authorized: false, message: 'No token provided.' });
   jwt.verify(token, config.secret, function(err, decoded){
     if (err) return res.status(500).send({ authorized: false, message: 'Failed to authenticate token.' });
     MongoClient.connect(url, function(err, db) {
