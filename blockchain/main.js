@@ -23,7 +23,7 @@ console.log('valid:', blockchain.isValid());
 console.log('query for "g12dd":', blockchain.query('g12dd'));
 
 //let's look for a tagId thats not there, should be false
-console.log('query for "g12dd":', blockchain.query('not,existing in chain'));
+console.log('query for "g1a2dd":', blockchain.query('not,existing in chain'));
 
 //we are evil and we want to manipulate the blockchain, we will change the value of the tag data to lolol
 blockchain.chain[1].tagData = {tagID: 'lolol'};
