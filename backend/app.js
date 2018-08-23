@@ -106,7 +106,7 @@ app.post('/claimOwnership',function(req,res){
           products.updateOne({tagId: req.body.tagId}, {$push: {ownerships: transaction}});
           //take give ownership away to user
           accounts.updateOne({userId: req.body.userId}, {$push: {ownership: req.body.tagId}});
-          res.status(200).send("release ownership completed");
+          res.status(200).send("You claimed ownership");
       } catch (error) {
         return res.status(500).send("Error has occured")
          console.log (error);
