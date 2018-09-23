@@ -1,18 +1,26 @@
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
+const Block = require('../blockchain/block');
+const fs = require('fs')
+const TagChain = require('../blockchain/blockchain');
 const express = require('express');
 const bodyParser = require("body-parser");
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const https = require('https');
 const config = require('./config');
 const util = require('./util');
 const app = express();
 // Connection URL
 const url = 'mongodb://localhost:27017/';
+const port =  3000
 const AuthController = require('./auth/AuthController');
 const Products = require('./manufacture/Products');
 const Dev = require('./dev-api/DevApi')
 const dbName = 'AuthMongo';
+const privateKey = fs.readFileSync( './keys/MyKey.key' );
+const certificate = fs.readFileSync( './keys/MyCertificate.crt' );
+let blockchain = new TagChain();
 
 app.use('/auth', AuthController);
 app.use('/manufacture', Products);
@@ -124,6 +132,9 @@ app.get('/', function(req, res){
   });
 });
 
-app.listen(3000, function() {
-  console.log('listening on 3000')
-})
+https.createServer({
+    key: privateKey,
+    cert: certificate
+}, app).listen(port, function() {
+  console.log('listening on ', port)
+});

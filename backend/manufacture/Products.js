@@ -19,7 +19,7 @@ router.post('/product',function(req,res){
     assert.equal(null, err);
     let products = db.db(dbName).collection('products')
     try {
-        blockchain.addBlock({tagID: req.body.tagId})
+        blockchain.addBlock({tagID: req.body.tagId});
         products.insertOne({
           tagId: req.body.tagId,
           productName: req.body.productName,
@@ -35,7 +35,6 @@ router.post('/product',function(req,res){
     db.close();
   });
 });
-
 
 router.post('/verify',function(req,res){
   MongoClient.connect(url, function(err, db) {
