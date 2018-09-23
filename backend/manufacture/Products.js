@@ -41,18 +41,18 @@ router.post('/verify',function(req,res){
     assert.equal(null, err);
     let products = db.db(dbName).collection('products')
     try {
-          if (blockchain.query(req.body.tagId)) {
-            products.findOne({tagId: req.body.tagId},
-              (err, product) => {
-                if (product){
-                  res.status(200).send(product);
-                } else {
-                  res.status(201).send("Not Real")
-                }
-            });
-          } else {
-            res.status(201).send("Tag not in blockchain")
-          }
+      if(blockchain.query(req.body.tagId)){
+          products.findOne({tagId: req.body.tagId},
+            (err, product) => {
+              if (product){
+                res.status(200).send(product);
+              } else {
+                res.status(201).send("Not Real")
+              }
+          });
+      } else {
+            res.status(201).send("Product not in blockchain")
+      }
     } catch (error) {
        console.log(error);
     };

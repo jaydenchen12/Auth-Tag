@@ -39,10 +39,10 @@ app.post('/ownership',function(req,res){
 });
 
 app.post('/transferOwnership',function(req,res){
+  if (!req.headers['authorization']) return res.status(401).send({ authorized: false, message: 'No token provided.' });
   let token = util.getToken(req.headers['authorization']);
-  if (!token) return res.status(401).send({ authorized: false, message: 'No token provided.' });
   jwt.verify(token, config.secret, function(err, decoded){
-    if (err) return res.status(500).send({ authorized: false, message: 'Failed to authenticate token.' });
+    if (err) return res.status(401).send({ authorized: false, message: 'Failed to authenticate token.' });
     MongoClient.connect(url, function(err, db) {
       assert.equal(null, err);
       let products = db.db(dbName).collection('products')
@@ -70,10 +70,10 @@ app.post('/transferOwnership',function(req,res){
   });
 });
 app.post('/releaseOwnership',function(req,res){
+  if (!req.headers['authorization']) return res.status(401).send({ authorized: false, message: 'No token provided.' });
   let token = util.getToken(req.headers['authorization']);
-  if (!token) return res.status(401).send({ authorized: false, message: 'No token provided.' });
   jwt.verify(token, config.secret, function(err, decoded){
-    if (err) return res.status(500).send({ authorized: false, message: 'Failed to authenticate token.' });
+    if (err) return res.status(401).send({ authorized: false, message: 'Failed to authenticate token.' });
     MongoClient.connect(url, function(err, db) {
       assert.equal(null, err);
       let products = db.db(dbName).collection('products')
@@ -97,10 +97,10 @@ app.post('/releaseOwnership',function(req,res){
   });
 });
 app.post('/claimOwnership',function(req,res){
+  if (!req.headers['authorization']) return res.status(401).send({ authorized: false, message: 'No token provided.' });
   let token = util.getToken(req.headers['authorization']);
-  if (!token) return res.status(401).send({ authorized: false, message: 'No token provided.' });
   jwt.verify(token, config.secret, function(err, decoded){
-    if (err) return res.status(500).send({ authorized: false, message: 'Failed to authenticate token.' });
+    if (err) return res.status(401).send({ authorized: false, message: 'Failed to authenticate token.' });
     MongoClient.connect(url, function(err, db) {
       assert.equal(null, err);
       let products = db.db(dbName).collection('products')
@@ -114,7 +114,7 @@ app.post('/claimOwnership',function(req,res){
           products.updateOne({tagId: req.body.tagId}, {$push: {ownerships: transaction}});
           //take give ownership away to user
           accounts.updateOne({userId: req.body.userId}, {$push: {ownership: req.body.tagId}});
-          res.status(200).send("release ownership completed");
+          res.status(200).send("You claimed ownership");
       } catch (error) {
         return res.status(500).send("Error has occured")
          console.log (error);
